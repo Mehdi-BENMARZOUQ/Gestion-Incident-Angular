@@ -11,12 +11,21 @@ import { EventService } from './demo/service/event.service';
 import { IconService } from './demo/service/icon.service';
 import { NodeService } from './demo/service/node.service';
 import { PhotoService } from './demo/service/photo.service';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
+import {AgenceModule} from "./demo/components/Agence/agence.module";
+import {LoginModule} from "./demo/components/auth/login/login.module";
+import {FormsModule} from "@angular/forms";
+import {BrowserModule} from "@angular/platform-browser";
+import {RegisterModule} from "./demo/components/auth/register/register.module";
+import {AuthInterceptor} from "./interceptor/auth.interceptor";
+
 
 @NgModule({
     declarations: [AppComponent, NotfoundComponent],
-    imports: [AppRoutingModule, AppLayoutModule],
+    imports: [HttpClientModule,AppRoutingModule, AppLayoutModule,AgenceModule,LoginModule ,RegisterModule,FormsModule,BrowserModule],
     providers: [
         { provide: LocationStrategy, useClass: PathLocationStrategy },
+        {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
         CountryService, CustomerService, EventService, IconService, NodeService,
         PhotoService, ProductService
     ],

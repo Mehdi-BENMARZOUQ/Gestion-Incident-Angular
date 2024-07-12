@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 import { LayoutService } from 'src/app/layout/service/app.layout.service';
+import {AuthService} from "../../../../service/Auth.service";
+import {Router} from "@angular/router";
+import Swal from 'sweetalert2';
 
 @Component({
     selector: 'app-login',
@@ -15,9 +18,44 @@ import { LayoutService } from 'src/app/layout/service/app.layout.service';
 })
 export class LoginComponent {
 
-    valCheck: string[] = ['remember'];
+    email: string;
+    password: string;
+    error: string;
 
-    password!: string;
+    constructor(private authService: AuthService, private router: Router) {}
 
-    constructor(public layoutService: LayoutService) { }
+
+    login(): void {
+        this.authService.login(this.email, this.password).subscribe(
+            response => {
+                if (response.statusCode === 200) {
+                    const role = this.authService.getRole();
+                    if (role === 'SUPERVISOR') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Login Success',
+                            text: `Welcome ${this.authService.getUser()}`,
+                        });
+                        this.router.navigate(['/agence']);
+                    } else {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Login Success',
+                            text: `Welcome ${this.authService.getUser()}`,
+                        });
+                        this.router.navigate(['/dashboard']);
+                    }
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Login Error',
+                        text: response.error || 'Wrong email or password',
+                    });
+                }
+            },
+            error => {
+                console.error('Error logging in', error);
+            }
+        );
+    }
 }
