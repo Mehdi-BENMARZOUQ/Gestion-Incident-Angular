@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Devis</title>
+</head>
+<body>
+<div class="col-12">
+    <div class="card">
+        <h5>Filter Menu</h5>
+        <p-toolbar styleClass="mb-4">
+            <ng-template pTemplate="left">
+                <div class="my-2">
+                    <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>
+                </div>
+            </ng-template>
+
+            <ng-template pTemplate="right">
+                <!--
+                <p-fileUpload (change)="importAgences($event)"  mode="basic"  accept=".csv" [maxFileSize]="1000000" label="Import" chooseLabel="Import" class="mr-2 inline-block"></p-fileUpload>
+-->
+                <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help" (click)="exportDeviss()"></button>
+            </ng-template>
+        </p-toolbar>
+        <p-table #dt1 [value]="deviss" dataKey="id" [rows]="10" [loading]="loading" [rowHover]="true" styleClass="p-datatable-gridlines" [paginator]="true" [globalFilterFields]="['numero','date','equipementE','prestataire','montant','assurance','rejected','technicien','agence','traitepar']" responsiveLayout="scroll">
+            <ng-template pTemplate="caption">
+                <div class="flex justify-content-between flex-column sm:flex-row">
+
+                    <button pButton label="Clear" class="p-button-outlined mb-2" icon="pi pi-filter-slash" (click)="clear(dt1)"></button>
+                    <span class="p-input-icon-left mb-2">
+                                <i class="pi pi-search"></i>
+                                <input pInputText type="text" #filter (input)="onGlobalFilter(dt1, $event)" placeholder="Search Keyword" class="w-full"/>
+                        </span>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="min-width: 12rem">
+                        <div class="flex justify-content-between align-items-center">
+                            NUMERO
+                            <p-columnFilter type="text" field="numero" display="menu" placeholder="Search by numero"></p-columnFilter>
+                        </div>
+                    </th>
+                    <th style="min-width: 12rem">
+                        <div class="flex justify-content-between align-items-center">
+                            DATE
+                            <p-columnFilter type="date" field="date" display="menu" placeholder="mm/dd/yyyy"></p-columnFilter>
+                        </div>
+                    </th>
+                    <th style="min-width: 14rem">
+                        <div class="flex justify-content-between align-items-center">
+                            EQUIPEMENT ENDOMMAGE
+                            <p-columnFilter type="text" field="equipementE" display="menu" placeholder="Search by equipement"></p-columnFilter>
+                        </div>
+                    </th>
+                    <th style="min-width: 14rem">
+                        <div class="flex justify-content-between align-items-center">
+                            PRESTATAIRE
+                            <p-columnFilter type="text" field="prestataire" display="menu" placeholder="Search by prestataire"></p-columnFilter>
+                        </div>
+                    </th>
+                    <th style="min-width: 14rem">
+                        <div class="flex justify-content-between align-items-center">
+                            MONTANT
+                            <p-columnFilter type="numeric" field="montant" display="menu" currency="MAD"></p-columnFilter>
+                        </div>
+                    </th>
+                    <th style="min-width: 14rem">
+                        <div class="flex justify-content-between align-items-center">
+                            ASSURENCE
+                            <p-columnFilter type="boolean" field="assurence" display="menu"></p-columnFilter>
+                        </div>
+                    </th>
+                    <th style="min-width: 14rem">
+                        <div class="flex justify-content-between align-items-center">
+                            REJECTED
+                            <p-columnFilter type="boolean" field="rejected" display="menu"></p-columnFilter>
+                        </div>
+                    </th>
+                    <th style="min-width: 14rem">
+                        <div class="flex justify-content-between align-items-center">
+                            TECHNICIEN
+                            <p-columnFilter field="technicien" matchMode="in" display="menu" [showMatchModes]="false" [showOperator]="false" [showAddButton]="false">
+                                <ng-template pTemplate="header">
+                                    <div class="px-3 pt-3 pb-0">
+                                        <span class="font-bold">Technicien</span>
+                                    </div>
+                                </ng-template>
+                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                    <p-multiSelect [ngModel]="value" [options]="techniciens" placeholder="Any" (onChange)="filter($event.value)" optionLabel="nom">
+                                        <ng-template let-option pTemplate="item">
+                                            <div class="p-multiselect-representative-option">
+                                                <span class="ml-2">{{option.nom}}</span>
+                                            </div>
+                                        </ng-template>
+                                    </p-multiSelect>
+                                </ng-template>
+                            </p-columnFilter>
+                        </div>
+                    </th>
+                    <th style="min-width: 14rem">
+                        <div class="flex justify-content-between align-items-center">
+                            AGENCE
+                            <p-columnFilter field="agence" matchMode="in" display="menu" [showMatchModes]="false" [showOperator]="false" [showAddButton]="false">
+                                <ng-template pTemplate="header">
+                                    <div class="px-3 pt-3 pb-0">
+                                        <span class="font-bold">Agence</span>
+                                    </div>
+                                </ng-template>
+                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                    <p-multiSelect [ngModel]="value" [options]="agences" placeholder="Any" (onChange)="filter($event.value)" optionLabel="nom">
+                                        <ng-template let-option pTemplate="item">
+                                            <div class="p-multiselect-representative-option">
+                                                <span class="ml-2">{{option.nom}}</span>
+                                            </div>
+                                        </ng-template>
+                                    </p-multiSelect>
+                                </ng-template>
+                            </p-columnFilter>
+                        </div>
+                    </th>
+
+                    <th style="min-width: 14rem">
+                        <div class="flex justify-content-between align-items-center">
+                            TRAITE PAR
+                            <!--<p-columnFilter field="technicien" matchMode="in" display="menu" [showMatchModes]="false" [showOperator]="false" [showAddButton]="false">
+                                <ng-template pTemplate="header">
+                                    <div class="px-3 pt-3 pb-0">
+                                        <span class="font-bold">Technicien</span>
+                                    </div>
+                                </ng-template>
+                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                    <p-multiSelect [ngModel]="value" [options]="techniciens" placeholder="Any" (onChange)="filter($event.value)" optionLabel="nom">
+                                        <ng-template let-option pTemplate="item">
+                                            <div class="p-multiselect-representative-option">
+                                                <span class="ml-2">{{option.nom}}</span>
+                                            </div>
+                                        </ng-template>
+                                    </p-multiSelect>
+                                </ng-template>
+                            </p-columnFilter>-->
+                        </div>
+                    </th>
+                    <th>
+
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-devis>
+                <tr>
+                    <td>
+                        {{devis.numero}}
+                    </td>
+                    <td>
+                        {{ devis.date | date:'dd/MM/yyyy' }}
+                    </td>
+                    <td>
+                        {{devis.equipementE}}
+                    </td>
+                    <td>
+                        {{devis.prestataire}}
+                    </td>
+                    <td>
+                        {{devis.montant}}
+                    </td>
+                    <td>
+                        {{devis.assurance}}
+                    </td>
+                    <td>
+                        {{devis.rejected}}
+                    </td>
+                    <td>
+                        {{devis.technicien.nom}}
+                    </td>
+                    <td>
+                        {{devis.agence.nom}}
+                    </td>
+                    <td>
+                        {{devis.traitepar.prenom}}
+                    </td>
+                    <td>
+                        <button pButton type="button" icon="pi pi-pencil" class="p-button-success mr-2" (click)="editDevis(devis)"></button>
+                        <button pButton type="button" icon="pi pi-trash" class="p-button-warning mr-2" (click)="deleteDevis(devis.id)"></button>
+                    </td>
+
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="8">No Devis found.</td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="loadingbody">
+                <tr>
+                    <td colspan="8">Loading devis data. Please wait.</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+
+    <p-dialog [(visible)]="devisDialog" [style]="{width: '600px'}" header="Product Details" [modal]="true" class="p-fluid">
+        <ng-template pTemplate="content">
+
+
+
+            <div class="field">
+                <label for="numero" style="text-transform: capitalize">Numero</label>
+                <input type="text" pInputText id="numero" [(ngModel)]="devis.numero" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !devis.numero}"/>
+                <small class="ng-dirty ng-invalid" *ngIf="submitted && !devis.numero" style="color:darkred">This field is required.</small>
+            </div>
+
+            <div class="field">
+                <label for="equipementE" style="text-transform: capitalize">Equipement Endommage</label>
+                <input type="text" pInputText id="equipementE" [(ngModel)]="devis.equipementE" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !devis.equipementE}"/>
+                <small class="ng-dirty ng-invalid" *ngIf="submitted && !devis.equipementE" style="color:darkred">This field is required.</small>
+            </div>
+
+            <div class="field">
+                <label for="prestataire" style="text-transform: capitalize">Prestataire</label>
+                <input type="text" pInputText id="prestataire" [(ngModel)]="devis.prestataire" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !devis.prestataire}"/>
+                <small class="ng-dirty ng-invalid" *ngIf="submitted && !devis.prestataire" style="color:darkred">This field is required.</small>
+            </div>
+
+            <div class="field">
+                <label for="montant" style="text-transform: capitalize">Montant</label>
+                <input type="text" pInputText id="montant" [(ngModel)]="devis.montant" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !devis.montant}"/>
+                <small class="ng-dirty ng-invalid" *ngIf="submitted && !devis.montant" style="color:darkred">This field is required.</small>
+            </div>
+
+
+            <div class="field">
+                <label  style="text-transform: capitalize">technicien</label>
+                <p-dropdown  [(ngModel)]="devis.technicien" inputId="technicien" optionValue="nom" [options]="techniciens" placeholder="Select">
+                    <ng-template pTemplate="selectedItem">
+                        <span *ngIf="devis && devis.technicien" [class]="devis.technicien.nom">{{devis.technicien}}</span>
+                    </ng-template>
+                    <ng-template let-option pTemplate="item">
+                        <span [class]="option.value">{{option.nom}}</span>
+                    </ng-template>
+                </p-dropdown>
+                <small class="ng-dirty ng-invalid" *ngIf="submitted && !devis.technicien" style="color:darkred">This field is required.</small>
+
+            </div>
+
+            <div class="field">
+                <label  style="text-transform: capitalize">agence</label>
+                <p-dropdown [(ngModel)]="devis.agence" inputId="agence" optionValue="nom" [options]="agences" placeholder="Select">
+                    <ng-template pTemplate="selectedItem">
+                        <span *ngIf="devis && devis.agence" [class]="devis.agence.nom">{{devis.agence}}</span>
+                    </ng-template>
+                    <ng-template let-option pTemplate="item">
+                        <span [class]="option.value">{{option.nom}} </span>
+                    </ng-template>
+                </p-dropdown>
+                <small class="ng-dirty ng-invalid" *ngIf="submitted && !devis.agence" style="color:darkred">This field is required.</small>
+
+            </div>
+
+            <div class="field">
+                <label style="text-transform: capitalize">assurance</label>
+                <div class="formgrid grid">
+                    <div class="field-radiobutton col-6">
+                        <p-radioButton id="assurance1" name="rejected" value="true" [(ngModel)]="devis.assurance"></p-radioButton>
+                        <label for="assurance1">True</label>
+                    </div>
+                    <div class="field-radiobutton col-6">
+                        <p-radioButton id="assurance2" name="rejected" value="false" [(ngModel)]="devis.assurance"></p-radioButton>
+                        <label for="assurance2">False</label>
+                    </div>
+                </div>
+                <small class="ng-dirty ng-invalid" *ngIf="submitted && !devis.numero" style="color:darkred">This field is required.</small>
+
+            </div>
+
+            <div class="field">
+                <label style="text-transform: capitalize">rejected</label>
+                <div class="formgrid grid">
+                    <div class="field-radiobutton col-6">
+                        <p-radioButton id="rejected1" name="rejected" value="true" [(ngModel)]="devis.rejected"></p-radioButton>
+                        <label for="rejected1">True</label>
+                    </div>
+                    <div class="field-radiobutton col-6">
+                        <p-radioButton id="rejected2" name="rejected" value="false" [(ngModel)]="devis.rejected"></p-radioButton>
+                        <label for="rejected2">False</label>
+                    </div>
+                </div>
+                <small class="ng-dirty ng-invalid" *ngIf="submitted && !devis.numero" style="color:darkred">This field is required.</small>
+
+            </div>
+
+
+
+
+        </ng-template>
+
+        <ng-template pTemplate="footer">
+            <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+            <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="save()"></button>
+        </ng-template>
+    </p-dialog>
+</div>
+</body>
+</html>
+

@@ -4,6 +4,9 @@ import { NotfoundComponent } from './demo/components/notfound/notfound.component
 import { AppLayoutComponent } from "./layout/app.layout.component";
 import {RoleGuard} from "./guard/role.guard";
 import {AgenceComponent} from "./demo/components/Agence/agence.component";
+import {TechnicienComponent} from "./demo/components/Technicien/technicien.component";
+import {DevisComponent} from "./demo/components/Devis/devis.component";
+import {FactureComponent} from "./demo/components/Facture/facture.component";
 
 @NgModule({
     imports: [
@@ -17,6 +20,22 @@ import {AgenceComponent} from "./demo/components/Agence/agence.component";
                         component: AgenceComponent,
                         canActivate: [RoleGuard],
                         data: { expectedRole: 'SUPERVISOR' }
+                    },
+                    {
+                        path: 'technicien',
+                        component: TechnicienComponent,
+                        canActivate: [RoleGuard],
+                        data: { expectedRole: 'SUPERVISOR' }
+                    },
+                    {
+                        path: 'devis',
+                        component: DevisComponent
+
+                    },
+                    {
+                        path: 'facture',
+                        component: FactureComponent
+
                     },
                     { path: 'dashboard', loadChildren: () => import('./demo/components/GI-Dashboard/dashboard.module').then(m => m.DashboardModule) },
                     { path: 'uikit', loadChildren: () => import('./demo/components/uikit/uikit.module').then(m => m.UIkitModule) },

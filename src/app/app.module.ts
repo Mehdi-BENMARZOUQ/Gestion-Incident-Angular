@@ -18,11 +18,15 @@ import {FormsModule} from "@angular/forms";
 import {BrowserModule} from "@angular/platform-browser";
 import {RegisterModule} from "./demo/components/auth/register/register.module";
 import {AuthInterceptor} from "./interceptor/auth.interceptor";
+import {TechnicienModule} from "./demo/components/Technicien/technicien.module";
+import {UserModule} from "./demo/components/user/user.module";
+import {DevisModule} from "./demo/components/Devis/devis.module";
+import {FactureModule} from "./demo/components/Facture/facture.module";
 
 
 @NgModule({
     declarations: [AppComponent, NotfoundComponent],
-    imports: [HttpClientModule,AppRoutingModule, AppLayoutModule,AgenceModule,LoginModule ,RegisterModule,FormsModule,BrowserModule],
+    imports: [HttpClientModule,AppRoutingModule, AppLayoutModule,AgenceModule,LoginModule ,RegisterModule,FactureModule,FormsModule,BrowserModule,TechnicienModule,UserModule,DevisModule],
     providers: [
         { provide: LocationStrategy, useClass: PathLocationStrategy },
         {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},

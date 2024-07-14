@@ -95,12 +95,12 @@
                 </div>
                 <div class="field">
                     <label for="status">Inventory Status</label>
-                    <p-dropdown [(ngModel)]="product.inventoryStatus" inputId="inventoryStatus" optionValue="label" [options]="statuses" placeholder="Select">
+                    <p-dropdown [(ngModel)]="product.inventoryStatus" inputId="inventoryStatus" optionValue="nom" [options]="statuses" placeholder="Select">
                         <ng-template pTemplate="selectedItem">
                             <span *ngIf="product && product.inventoryStatus" [class]="'product-badge status-' + product.inventoryStatus.toString().toLowerCase()">{{product.inventoryStatus}}</span>
                         </ng-template>
                         <ng-template let-option pTemplate="item">
-                            <span [class]="'product-badge status-' + option.value">{{option.label}}</span>
+                            <span [class]="'product-badge status-' + option.value">{{option.nom}}</span>
                         </ng-template>
                     </p-dropdown>
                 </div>

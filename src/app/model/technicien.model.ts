@@ -1,8 +1,8 @@
 
 
 export class TechnicienModel {
-    id: number;
-    matricule: string;
+    id?: number;
+    matricule?: string;
     nom: string;
 
 }

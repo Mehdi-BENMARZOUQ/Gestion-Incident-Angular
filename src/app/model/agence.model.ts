@@ -1,4 +1,4 @@
 export class AgenceModel {
-    id: number;
+    id?: number;
     nom: string;
 }

@@ -1,16 +1,14 @@
-import {UserModel} from "./user.model";
 import {DevisModel} from "./devis.model";
+import {UserModel} from "./user.model";
+
 
 export class FactureModel {
-    id: number;
+    id?: number;
+    date_traitement?: Date;
+    traitepar?: UserModel;
 
-    message: string;
-
-    read: boolean = false;
-
-    devis?: DevisModel;
-
-    user: UserModel;
-
-    createdAt: Date;
+    numero: string;
+    date_facture : Date;
+    montant: number;
+    devis : DevisModel;
 }

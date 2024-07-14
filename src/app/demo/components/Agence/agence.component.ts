@@ -5,7 +5,7 @@ import { AgenceService } from '../../../service/agence.service';
 import {AgenceModel} from "../../../model/agence.model";
 import {Product} from "../../api/product";
 import Swal from 'sweetalert2';
-//import * as Papa from 'papaparse';
+import * as Papa from 'papaparse';
 
 
 interface expandedRows {
@@ -77,6 +77,7 @@ export class AgenceComponent implements OnInit {
         };
         this.submitted = true;
         this.agenceDialog = true;
+        this.isNew = true;
     }
 
     hideDialog() {
@@ -91,7 +92,6 @@ export class AgenceComponent implements OnInit {
         if (this.agence.nom?.trim()) {
             this.agenceService.getAgenceByName(this.agence.nom).subscribe(
                     (existingAgences) => {
-                        console.log(`Agence : ${existingAgences}`);
                     if (existingAgences && this.isNew) {
                         Swal.fire({
                             icon: 'error',
@@ -162,8 +162,9 @@ export class AgenceComponent implements OnInit {
         this.agenceDialog = true;
         this.isNew = false;
     }
+
     exportAgences() {
-        //const csv = Papa.unparse(this.agences);
+        const csv = Papa.unparse(this.agences);
         const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
@@ -172,6 +173,32 @@ export class AgenceComponent implements OnInit {
         link.click();
         document.body.removeChild(link);
     }
-
+    importAgences(event: any) {
+        const file = event.target.files[0];
+        if (file) {
+            Papa.parse(file, {
+                header: true,
+                complete: (results) => {
+                    results.data.forEach((data: any) => {
+                        const newAgence: AgenceModel = {
+                            id: data.id,
+                            nom: data.nom
+                        };
+                        this.agenceService.createAgence(newAgence).subscribe(
+                            (newAgence) => {
+                                this.agences.push(newAgence);
+                                this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Agences Imported', life: 3000 });
+                            },
+                            (error) => {
+                                console.error(error);
+                                this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to import agence', life: 3000 });
+                            }
+                        );
+                    });
+                    this.getAgences();
+                }
+            });
+        }
+    }
 
 }
