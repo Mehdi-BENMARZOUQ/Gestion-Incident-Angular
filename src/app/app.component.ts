@@ -1,8 +1,6 @@
-import {Component, HostListener, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { PrimeNGConfig } from 'primeng/api';
 import {AuthService} from "./service/Auth.service";
-import Swal from "sweetalert2/dist/sweetalert2.js";
-import {IdleService} from "./service/IdleService";
 import {NavigationEnd, Router} from "@angular/router";
 
 @Component({

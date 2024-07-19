@@ -44,7 +44,7 @@ export class IdleService {
                     this.router.navigate(['/auth/login']);
                 });
             },
-            error: (error) => {
+            error: () => {
                 this.ngZone.run(() => {
                     this.router.navigate(['/auth/login']);
                 });

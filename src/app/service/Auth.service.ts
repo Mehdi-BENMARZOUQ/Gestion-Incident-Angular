@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {BehaviorSubject, catchError, Observable, of, tap, throwError} from 'rxjs';
+import {BehaviorSubject,  Observable, tap} from 'rxjs';
 import { map } from 'rxjs/operators';
 import {environment} from "../../environments/environment";
-import {AgenceModel} from "../model/agence.model";
-import {UserModel} from "../model/user.model";
 import {Router} from "@angular/router";
 
 @Injectable({

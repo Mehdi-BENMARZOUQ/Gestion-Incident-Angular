@@ -8,9 +8,6 @@ import {UserService} from "../../../service/user.service";
 import {Router} from "@angular/router";
 
 
-interface expandedRows {
-    [key: string]: boolean;
-}
 
 @Component({
     templateUrl: './user.component.html',
@@ -36,7 +33,7 @@ export class UserComponent implements OnInit {
     userDialog: boolean = false;
     isNew: boolean = true;
 
-    constructor(private userService: UserService, private messageService: MessageService,private router: Router) { }
+    constructor(private userService: UserService, private messageService: MessageService) { }
 
     ngOnInit(): void {
         this.getUsers();
