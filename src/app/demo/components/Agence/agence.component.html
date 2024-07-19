@@ -13,6 +13,7 @@
                     <div class="my-2">
                         <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>
                     </div>
+
                 </ng-template>
 
                 <ng-template pTemplate="right">
@@ -83,7 +84,7 @@
         </div>
 
 
-        <p-dialog [(visible)]="agenceDialog" [style]="{width: '450px'}" header="Product Details" [modal]="true" class="p-fluid">
+        <p-dialog [(visible)]="agenceDialog" [style]="{width: '450px'}" header="Add | Update Agence" [modal]="true" class="p-fluid">
             <ng-template pTemplate="content">
                 <div class="field">
                     <label for="name">Name</label>

@@ -5,13 +5,10 @@ import Swal from 'sweetalert2';
 import * as Papa from 'papaparse';
 import {DevisModel} from "../../../model/devis.model";
 import {DevisService} from "../../../service/devis.service";
-import {TechnicienModel} from "../../../model/technicien.model";
-import {TechnicienService} from "../../../service/technicien.service";
-import {AgenceModel} from "../../../model/agence.model";
-import {AgenceService} from "../../../service/agence.service";
 import {FactureModel} from "../../../model/facture.model";
 import {FactureService} from "../../../service/facture.service";
-
+import {AuthService} from "../../../service/Auth.service";
+import { Router, ActivatedRoute } from '@angular/router';
 
 interface expandedRows {
     [key: string]: boolean;
@@ -25,6 +22,7 @@ export class FactureComponent implements OnInit {
 
     factures: FactureModel[] = [];
     deviss: DevisModel[] = [];
+    filteredDevis: DevisModel[] =[];
     loading: boolean = true;
     facture: FactureModel = {
         numero: "",
@@ -45,22 +43,61 @@ export class FactureComponent implements OnInit {
     factureDialog: boolean = false;
     isNew: boolean = true;
 
-    constructor(
+
+    isLoggedIn: boolean;
+    userRole: string | null = null;
+
+    constructor(private  authService: AuthService,
                 private devisService: DevisService,
                 private messageService: MessageService,
                 private factureService: FactureService,
+                private router: Router,
+                private route: ActivatedRoute
     ) { }
 
     ngOnInit(): void {
         this.getFactures();
         this.getDeviss();
+        this.checkLoginStatus();
     }
+
+    checkLoginStatus(): void {
+        this.isLoggedIn = this.authService.isLoggedIn();
+        if (this.isLoggedIn) {
+            this.userRole = this.authService.getCurrentRole();
+        } else {
+            this.userRole = null;
+        }
+    }
+
+   /* getFactures(): void {
+        this.factureService.getFactures().subscribe(
+            (data: FactureModel[]) => {
+                this.factures = data;
+                this.loading = false;
+            },
+            (error) => {
+                console.error(error);
+                this.loading = false;
+            }
+        );
+    }*/
+
+    filteredFactures: FactureModel[] = [];
 
     getFactures(): void {
         this.factureService.getFactures().subscribe(
             (data: FactureModel[]) => {
                 this.factures = data;
-                this.loading = false;
+                this.route.queryParams.subscribe(params => {
+                    const numero = params['numero'];
+                    if (numero) {
+                        this.filteredFactures = this.factures.filter(f => f.numero === numero);
+                    } else {
+                        this.filteredFactures = this.factures;
+                    }
+                    this.loading = false;
+                });
             },
             (error) => {
                 console.error(error);
@@ -275,5 +312,17 @@ export class FactureComponent implements OnInit {
         }
     }
 
+    filterDeviss(event: any) {
+        const filtered: DevisModel[] = [];
+        const query = event.query;
+        for (let i = 0; i < this.deviss.length; i++) {
+            const variable = this.deviss[i];
+            if (variable.numero.toLowerCase().indexOf(query.toLowerCase()) == 0) {
+                filtered.push(variable);
+            }
+        }
+
+        this.filteredDevis = filtered;
+    }
 
 }

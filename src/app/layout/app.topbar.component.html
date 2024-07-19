@@ -1,35 +1,37 @@
 <div class="layout-topbar">
-    <a class="layout-topbar-logo" routerLink="">
-        <img src="assets/layout/images/{{layoutService.config().colorScheme === 'light' ? 'logo-dark' : 'logo-white'}}.svg" alt="logo">
-        <span>SAKAI</span>
-    </a>
 
-    <button #menubutton class="p-link layout-menu-button layout-topbar-button" (click)="layoutService.onMenuToggle()">
+    <button #menubutton class="p-link  layout-topbar-button" (click)="layoutService.onMenuToggle()">
         <i class="pi pi-bars"></i>
     </button>
+    <a class="layout-topbar-logo" routerLink="">
+        <img src="assets/layout/images/themes/banque-populaire-logo.png" alt="logo" style="height: 4rem;margin-left: 1.5rem">
+    </a>
+
 
     <button #topbarmenubutton class="p-link layout-topbar-menu-button layout-topbar-button" (click)="layoutService.showProfileSidebar()">
         <i class="pi pi-ellipsis-v"></i>
     </button>
 
-    <div #topbarmenu class="layout-topbar-menu" [ngClass]="{'layout-topbar-menu-mobile-active': layoutService.state.profileSidebarVisible}">
-        <button class="p-link layout-topbar-button">
+    <div #topbarmenu class="layout-topbar-menu"  [ngClass]="{'layout-topbar-menu-mobile-active': layoutService.state.profileSidebarVisible}">
+        <button class="p-link "><!--layout-topbar-button-->
+            <!--
             <i class="pi pi-bell"></i>
             <span>Notification</span>
+            -->
+            <i [routerLink]="['/notifications']" class="pi pi-bell mr-4 p-text-secondary" pBadge style="font-size: 1.5rem"  value="{{ unreadNotificationCount }}" ></i>
         </button>
-        <button class="p-link layout-topbar-button">
-            <i class="pi pi-inbox"></i>
-            <span>Demande</span>
-        </button>
-        <button class="p-link layout-topbar-button">
-            <i class="pi pi-user"></i>
+        <button class="p-link " style="margin-left:1rem">
+            <i *ngIf="userRole === 'SUPERVISOR'" [routerLink]="['/demandes']" class="pi pi-envelope  mr-4 p-text-secondary" pBadge style="font-size: 1.5rem"  value="{{ unreadDemandCount }}" ></i>
 
-            <span>Profile</span>
-
+            <i *ngIf="userRole === 'USER'" [routerLink]="['/myfeedbacks']" class="pi pi-envelope  mr-4 p-text-secondary" pBadge style="font-size: 1.5rem"  value="{{ feedbackCount }}" ></i>
         </button>
-        <div *ngIf="isLoggedIn" class="user-info" style="display: flex;align-items: center">
-            <span>Welcome, {{ user }}</span>
-        </div>
+
+
+        <button class="p-link " *ngIf="isLoggedIn">
+       <!--     <i class="pi pi-user  mr-4 p-text-secondary" style="font-size: 1.5rem"></i>-->
+            <p-menubar [model]="items"></p-menubar>
+        </button>
+
 
     </div>
 </div>

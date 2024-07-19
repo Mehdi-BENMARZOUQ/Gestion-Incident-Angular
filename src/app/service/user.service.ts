@@ -12,22 +12,25 @@ export class UserService {
     constructor(private http: HttpClient) { }
 
     getUsers(): Observable<UserModel[]> {
-        return this.http.get<UserModel[]>(`${this.apiUrl}/supervisor/user`);
+        return this.http.get<UserModel[]>(`${this.apiUrl}/auth/supervisor/getAll`);
     }
 
     createUser(user: UserModel): Observable<UserModel> {
-        return this.http.post<UserModel>(`${this.apiUrl}/supervisor/saveUser`, user);
+        return this.http.post<UserModel>(`${this.apiUrl}/auth/register`, user);
     }
 
     updateUser(id: number, user: UserModel): Observable<UserModel> {
-        return this.http.post<UserModel>(`${this.apiUrl}/supervisor/updateteuser/${id}`, user);
+        return this.http.post<UserModel>(`${this.apiUrl}/auth/supervisor/updateUser/${id}`, user);
     }
-
     deleteUser(id: number): Observable<void> {
-        return this.http.delete<void>(`${this.apiUrl}/supervisor/deleteuser/${id}`);
+        return this.http.delete<void>(`${this.apiUrl}/auth/supervisor/deleteUser/${id}`);
+    }
+    getUserByEmail(email: string): Observable<UserModel[]> {
+        return this.http.get<UserModel[]>(`${this.apiUrl}/auth/user/email/${email}`);
+    }
+    logout(): Observable<any> {
+        return this.http.post(`${this.apiUrl}/auth/logout`, {}, { responseType: 'text' });
     }
 
-    getUserByEmail(email: string): Observable<UserModel[]> {
-        return this.http.get<UserModel[]>(`${this.apiUrl}/supervisor/user/email/${email}`);
-    }
+
 }

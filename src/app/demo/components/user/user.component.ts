@@ -5,6 +5,7 @@ import Swal from 'sweetalert2';
 import * as Papa from 'papaparse';
 import {UserModel} from "../../../model/user.model";
 import {UserService} from "../../../service/user.service";
+import {Router} from "@angular/router";
 
 
 interface expandedRows {
@@ -35,7 +36,7 @@ export class UserComponent implements OnInit {
     userDialog: boolean = false;
     isNew: boolean = true;
 
-    constructor(private userService: UserService, private messageService: MessageService) { }
+    constructor(private userService: UserService, private messageService: MessageService,private router: Router) { }
 
     ngOnInit(): void {
         this.getUsers();
@@ -84,11 +85,7 @@ export class UserComponent implements OnInit {
             prenom: "",
             email: "",
             role: "",
-            password:"",
-            notifications: [],
-            devisC: [],
-            demandes: [],
-            handledDemandes: [],
+            password:""
         };
         this.submitted = true;
         this.userDialog = true;
@@ -100,7 +97,7 @@ export class UserComponent implements OnInit {
     }
 
 
-    saveProduct() {
+    saveUser() {
         this.submitted = true;
 
         if (this.user.email?.trim()) {
@@ -161,11 +158,7 @@ export class UserComponent implements OnInit {
                         prenom: "",
                         email: "",
                         role: "",
-                        password:"",
-                        notifications: [],
-                        devisC: [],
-                        demandes: [],
-                        handledDemandes: [],
+                        password:""
                     };
                 },
                 (error) => {
@@ -197,40 +190,6 @@ export class UserComponent implements OnInit {
         document.body.removeChild(link);
     }
 
-    importAUsers(event: any) {
-        const file = event.target.files[0];
-        if (file) {
-            Papa.parse(file, {
-                header: true,
-                complete: (results) => {
-                    results.data.forEach((data: any) => {
-                        const newUser: UserModel = {
-                            id: data.id,
-                            prenom: data.prenom,
-                            nom: data.nom,
-                            email: data.email,
-                            role: data.role,
-                            password:data.password,
-                            notifications: data.notifications,
-                            devisC: data.devisC,
-                            demandes: data.demandes,
-                            handledDemandes: data.handledDemandes,
-                        };
-                        this.userService.createUser(newUser).subscribe(
-                            (newUser) => {
-                                this.users.push(newUser);
-                                this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'User Imported', life: 3000 });
-                            },
-                            (error) => {
-                                console.error(error);
-                                this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to import User', life: 3000 });
-                            }
-                        );
-                    });
-                    this.getUsers();
-                }
-            });
-        }
-    }
+
 
 }

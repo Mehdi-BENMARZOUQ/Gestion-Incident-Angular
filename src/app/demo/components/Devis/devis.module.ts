@@ -21,6 +21,8 @@ import {ToolbarModule} from "primeng/toolbar";
 import {CrudRoutingModule} from "../pages/crud/crud-routing.module";
 import {DevisComponent} from "./devis.component";
 import {DevisRoutingModule} from "./devis-routing.module";
+import {AutoCompleteModule} from "primeng/autocomplete";
+import {BadgeModule} from "primeng/badge";
 
 @NgModule({
     imports: [
@@ -44,7 +46,9 @@ import {DevisRoutingModule} from "./devis-routing.module";
         InputTextareaModule,
         RadioButtonModule,
         ToolbarModule,
-        CrudRoutingModule
+        CrudRoutingModule,
+        AutoCompleteModule,
+        BadgeModule
     ],
     declarations: [DevisComponent]
 })

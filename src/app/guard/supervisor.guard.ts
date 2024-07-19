@@ -12,7 +12,7 @@ export class SupervisorGuard implements CanActivate {
         if (this.authService.isLoggedIn() && this.authService.getRole() === 'SUPERVISOR') {
             return true;
         } else {
-            this.router.navigate(['/']);
+            this.router.navigate(['/dashboard']);
             return false;
         }
     }

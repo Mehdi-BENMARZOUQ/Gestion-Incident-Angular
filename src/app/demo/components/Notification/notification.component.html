@@ -1,0 +1,38 @@
+<!-- src/app/component/notification/notification.component.html -->
+<div *ngIf="loading">Loading notifications...</div>
+
+<div *ngIf="!loading && notifications.length === 0">No unread notifications.</div>
+
+
+<div class="col-12" *ngIf="!loading && notifications.length > 0">
+    <div class="card">
+        <h4 class="font-bold">Notifications</h4>
+
+        <p-table [value]="notifications" scrollDirection="both" [scrollable]="true" scrollHeight="400px" styleClass="mt-3" responsiveLayout="scroll">
+            <ng-template pTemplate="caption">
+                <div class="flex justify-content-between flex-column sm:flex-row">
+                    <button *ngIf="!loading && notifications.length > 0" pButton pRipple type="button" label="Delete All" (click)="deleteAllNotifications()" class="p-button-raised p-button-danger"></button>
+
+                </div>
+            </ng-template>
+            <ng-template pTemplate="body" let-notification>
+                <tr>
+                    <td style="width:500px"  class="font-bold">
+                        <a [routerLink]="['/devis']" [queryParams]="{ numero: notification.devis.numero }">
+                            {{notification.devis.numero}} :
+                        </a>
+                        {{notification.message}}
+                    </td>
+                    <td style="width:100px"  class="font-bold">
+                        <button (click)="markAsRead(notification)" pButton pRipple type="button" icon="pi pi-check" class="p-button-rounded p-button-success"></button>
+                    </td>
+                  <!--
+                    <td style="width:100px"  class="font-bold">
+                        <button (click)="deleteNotification(notification)" pButton pRipple type="button" icon="pi pi-times" class="p-button-rounded p-button-danger"></button>
+                    </td>
+                    -->
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>

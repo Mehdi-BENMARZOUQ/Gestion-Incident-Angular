@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Agence</title>
+</head>
+<body>
+<div class="col-12">
+    <div class="card">
+        <h5>Filter Menu</h5>
+
+        <p-table #dt1 [value]="demandes" dataKey="id" [rows]="10" [loading]="loading" [rowHover]="true" styleClass="p-datatable-gridlines" [paginator]="true" [globalFilterFields]="['id','type','numero','message','description']" responsiveLayout="scroll">
+            <ng-template pTemplate="caption">
+                <div class="flex justify-content-between flex-column sm:flex-row">
+
+                    <button pButton label="Clear" class="p-button-outlined mb-2" icon="pi pi-filter-slash" (click)="clear(dt1)"></button>
+                    <span class="p-input-icon-left mb-2">
+                                <i class="pi pi-search"></i>
+                                <input pInputText type="text" #filter (input)="onGlobalFilter(dt1, $event)" placeholder="Search Keyword" class="w-full"/>
+                        </span>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="min-width: 12rem">
+                        <div class="flex justify-content-between align-items-center">
+                            TYPE
+                            <p-columnFilter type="text" field="type" display="menu" placeholder="Search by type"></p-columnFilter>
+                        </div>
+                    </th>
+                    <th style="min-width: 12rem">
+                        <div class="flex justify-content-between align-items-center">
+                            NUMERO
+                            <p-columnFilter type="text" field="numero" display="menu" placeholder="Search by numero"></p-columnFilter>
+                        </div>
+                    </th>
+                    <th style="min-width: 14rem">
+                        <div class="flex justify-content-between align-items-center">
+                            MESSAGE
+                            <p-columnFilter type="text" field="message" display="menu" placeholder="Search by message"></p-columnFilter>
+                        </div>
+                    </th>
+                    <th style="min-width: 14rem">
+                        <div class="flex justify-content-between align-items-center">
+                            DESCRIPTION
+                            <p-columnFilter type="text" field="description" display="menu" placeholder="Search by description"></p-columnFilter>
+                        </div>
+                    </th>
+                    <th style="min-width: 14rem">
+                        <div class="flex justify-content-between align-items-center">
+                            Action
+                        </div>
+                    </th>
+
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-demande>
+                <tr>
+                    <td>
+                        {{demande.type}}
+                    </td>
+                    <td>
+                        <a [routerLink]="getRouterLink(demande.type)" [queryParams]="{ numero: demande.numero }">
+                            {{demande.numero}}
+                        </a>
+                    </td>
+                    <td>
+                        {{demande.message}}
+                    </td>
+                    <td>
+                        {{demande.description}}
+                    </td>
+                    <td>
+                        <button pButton pRipple type="button" label="Handle" class="p-button-raised p-button-success" (click)="editDemande(demande);"></button>
+                    </td>
+
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="8">No Demands found.</td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="loadingbody">
+                <tr>
+                    <td colspan="8">Loading Demands data. Please wait.</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+
+    <p-dialog [(visible)]="demandeDialog" [style]="{width: '450px'}" header="Handle Demand" [modal]="true" class="p-fluid">
+
+        <ng-template pTemplate="content">
+            <div class="field">
+                <label >Type:</label>
+                <input type="text" pInputText placeholder="{{ demande.type }}" [disabled]="true"/>
+            </div>
+            <div class="field">
+                <label >Numero:</label>
+                <input type="text" pInputText placeholder="{{ demande.numero }}" [disabled]="true"/>
+            </div>
+            <div class="field">
+                <label >Response Type</label>
+                <div class="formgrid grid">
+                    <div class="field-radiobutton col-6">
+                        <p-radioButton id="responseType1" name="responseType" value="Handled" [(ngModel)]="responseType"></p-radioButton>
+                        <label for="responseType1">Handled</label>
+                    </div>
+                    <div class="field-radiobutton col-6">
+                        <p-radioButton id="responseType2" name="responseType" value="Rejected" [(ngModel)]="responseType"></p-radioButton>
+                        <label for="responseType2">Rejected</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="message">Message</label>
+                <input type="text" pInputText id="message" [(ngModel)]="responseMessage" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !responseMessage}"/>
+                <small class="ng-dirty ng-invalid" *ngIf="submitted && !responseMessage">This field is required.</small>
+            </div>
+
+        </ng-template>
+
+        <ng-template pTemplate="footer">
+            <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+            <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="handleDemande()"></button>
+        </ng-template>
+    </p-dialog>
+</div>
+</body>
+</html>

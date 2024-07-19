@@ -9,6 +9,8 @@ import {TechnicienModel} from "../../../model/technicien.model";
 import {TechnicienService} from "../../../service/technicien.service";
 import {AgenceModel} from "../../../model/agence.model";
 import {AgenceService} from "../../../service/agence.service";
+import {AuthService} from "../../../service/Auth.service";
+import { Router, ActivatedRoute } from '@angular/router';
 
 
 interface expandedRows {
@@ -24,6 +26,8 @@ export class DevisComponent implements OnInit {
     deviss: DevisModel[] = [];
     agences: AgenceModel[] = [];
     techniciens: TechnicienModel[] = [];
+    filteredTechnicien : TechnicienModel[] = [];
+    filteredAgence : AgenceModel[] = [];
     loading: boolean = true;
     devis: DevisModel = {
         numero: "",
@@ -43,23 +47,60 @@ export class DevisComponent implements OnInit {
     devisDialog: boolean = false;
     isNew: boolean = true;
 
-    constructor(private agenceService: AgenceService,
+    isLoggedIn: boolean;
+    userRole: string | null = null;
+
+    constructor(private  authService: AuthService,
+                private agenceService: AgenceService,
                 private devisService: DevisService,
                 private messageService: MessageService,
-                private technicienService: TechnicienService
+                private technicienService: TechnicienService,
+                private router: Router,
+                private route: ActivatedRoute
     ) { }
 
     ngOnInit(): void {
         this.getDeviss();
         this.getTechniciens();
         this.getAgences();
+        this.checkLoginStatus();
     }
+    checkLoginStatus(): void {
+        this.isLoggedIn = this.authService.isLoggedIn();
+        if (this.isLoggedIn) {
+            this.userRole = this.authService.getCurrentRole();
+        } else {
+            this.userRole = null;
+        }
+    }
+    /*getDeviss(): void {
+        this.devisService.getDevis().subscribe(
+            (data: DevisModel[]) => {
+                this.deviss = data;
+                this.loading = false;
+            },
+            (error) => {
+                console.error(error);
+                this.loading = false;
+            }
+        );
+    }*/
+
+    filteredDevis: DevisModel[] = [];
 
     getDeviss(): void {
         this.devisService.getDevis().subscribe(
             (data: DevisModel[]) => {
                 this.deviss = data;
-                this.loading = false;
+                this.route.queryParams.subscribe(params => {
+                    const numero = params['numero'];
+                    if (numero) {
+                        this.filteredDevis = this.deviss.filter(f => f.numero === numero);
+                    } else {
+                        this.filteredDevis = this.deviss;
+                    }
+                    this.loading = false;
+                });
             },
             (error) => {
                 console.error(error);
@@ -271,5 +312,29 @@ export class DevisComponent implements OnInit {
         }
     }
 
+    filterTechniciens(event: any) {
+        const filtered: TechnicienModel[] = [];
+        const query = event.query;
+        for (let i = 0; i < this.techniciens.length; i++) {
+            const variable = this.techniciens[i];
+            if (variable.nom.toLowerCase().indexOf(query.toLowerCase()) == 0) {
+                filtered.push(variable);
+            }
+        }
 
+        this.filteredTechnicien = filtered;
+    }
+
+    filterAgences(event: any) {
+        const filtered: AgenceModel[] = [];
+        const query = event.query;
+        for (let i = 0; i < this.agences.length; i++) {
+            const variable = this.agences[i];
+            if (variable.nom.toLowerCase().indexOf(query.toLowerCase()) == 0) {
+                filtered.push(variable);
+            }
+        }
+
+        this.filteredAgence = filtered;
+    }
 }

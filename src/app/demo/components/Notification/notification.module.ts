@@ -19,14 +19,14 @@ import {InputTextareaModule} from "primeng/inputtextarea";
 import {RadioButtonModule} from "primeng/radiobutton";
 import {ToolbarModule} from "primeng/toolbar";
 import {CrudRoutingModule} from "../pages/crud/crud-routing.module";
-import {FactureComponent} from "./facture.component";
-import {FactureRoutingModule} from "./facture-routing.module";
-import {AutoCompleteModule} from "primeng/autocomplete";
+import {ChipsModule} from "primeng/chips";
+import {NotificationRoutingModule} from "./notification-routing.module";
+import {NotificationComponent} from "./notification.component";
 
 @NgModule({
     imports: [
         CommonModule,
-        FactureRoutingModule,
+        NotificationRoutingModule,
         FormsModule,
         TableModule,
         RatingModule,
@@ -46,9 +46,9 @@ import {AutoCompleteModule} from "primeng/autocomplete";
         RadioButtonModule,
         ToolbarModule,
         CrudRoutingModule,
-        AutoCompleteModule
+        ChipsModule
     ],
-    declarations: [FactureComponent]
+    declarations: [NotificationComponent]
 })
-export class FactureModule {
+export class NotificationModule {
 }

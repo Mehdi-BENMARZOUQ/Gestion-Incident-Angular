@@ -6,6 +6,9 @@ import {AgenceModel} from "../../../model/agence.model";
 import {Product} from "../../api/product";
 import Swal from 'sweetalert2';
 import * as Papa from 'papaparse';
+import {UserService} from "../../../service/user.service";
+import {Router} from "@angular/router";
+import {AuthService} from "../../../service/Auth.service";
 
 
 interface expandedRows {
@@ -173,32 +176,6 @@ export class AgenceComponent implements OnInit {
         link.click();
         document.body.removeChild(link);
     }
-    importAgences(event: any) {
-        const file = event.target.files[0];
-        if (file) {
-            Papa.parse(file, {
-                header: true,
-                complete: (results) => {
-                    results.data.forEach((data: any) => {
-                        const newAgence: AgenceModel = {
-                            id: data.id,
-                            nom: data.nom
-                        };
-                        this.agenceService.createAgence(newAgence).subscribe(
-                            (newAgence) => {
-                                this.agences.push(newAgence);
-                                this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Agences Imported', life: 3000 });
-                            },
-                            (error) => {
-                                console.error(error);
-                                this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to import agence', life: 3000 });
-                            }
-                        );
-                    });
-                    this.getAgences();
-                }
-            });
-        }
-    }
+
 
 }

@@ -66,8 +66,16 @@ export class AuthService {
     getRole() {
         return localStorage.getItem('role');
     }
+    getCurrentRole() {
+        return this.currentUserValue.role;
+    }
 
     getUser(){
          return this.currentUserValue.prenom;
+    }
+
+    clearAuthData(): void {
+        localStorage.removeItem('token');
+        localStorage.removeItem('refreshToken');
     }
 }

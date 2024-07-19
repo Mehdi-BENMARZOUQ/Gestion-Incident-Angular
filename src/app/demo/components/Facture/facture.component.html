@@ -22,7 +22,7 @@
                 <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help" (click)="exportFactures()"></button>
             </ng-template>
         </p-toolbar>
-        <p-table #dt1 [value]="factures" dataKey="id" [rows]="10" [loading]="loading" [rowHover]="true" styleClass="p-datatable-gridlines" [paginator]="true" [globalFilterFields]="['numero','date_facture','montant','devis','date_traitement','traitepar']" responsiveLayout="scroll">
+        <p-table #dt1 [value]="filteredFactures" dataKey="id" [rows]="10" [loading]="loading" [rowHover]="true" styleClass="p-datatable-gridlines" [paginator]="true" [globalFilterFields]="['numero','date_facture','montant','devis','date_traitement','traitepar']" responsiveLayout="scroll">
             <ng-template pTemplate="caption">
                 <div class="flex justify-content-between flex-column sm:flex-row">
 
@@ -103,7 +103,7 @@
                             </p-columnFilter>-->
                         </div>
                     </th>
-                    <th>
+                    <th *ngIf="userRole === 'SUPERVISOR'">
 
                     </th>
                 </tr>
@@ -128,7 +128,7 @@
                     <td>
                         {{facture.traitepar.prenom}}
                     </td>
-                    <td>
+                    <td *ngIf="userRole === 'SUPERVISOR'">
                         <button pButton type="button" icon="pi pi-pencil" class="p-button-success mr-2" (click)="editFacture(facture)"></button>
                         <button pButton type="button" icon="pi pi-trash" class="p-button-warning mr-2" (click)="deleteFacture(facture.id)"></button>
                     </td>
@@ -149,7 +149,7 @@
     </div>
 
 
-    <p-dialog [(visible)]="factureDialog" [style]="{width: '600px'}" header="Product Details" [modal]="true" class="p-fluid">
+    <p-dialog [(visible)]="factureDialog" [style]="{width: '600px'}"  [modal]="true" class="p-fluid">
         <ng-template pTemplate="content">
 
 
@@ -162,14 +162,8 @@
 
             <div class="field">
                 <label  style="text-transform: capitalize">devis</label>
-                <p-dropdown [(ngModel)]="facture.devis" inputId="agence" optionValue="numero" [options]="deviss" placeholder="Select">
-                    <ng-template pTemplate="selectedItem">
-                        <span *ngIf="facture && facture.devis" [class]="facture.devis.numero">{{facture.devis}}</span>
-                    </ng-template>
-                    <ng-template let-option pTemplate="item">
-                        <span [class]="option.value">{{option.numero}} </span>
-                    </ng-template>
-                </p-dropdown>
+                <p-autoComplete [(ngModel)]="facture.devis" [suggestions]="filteredDevis" (completeMethod)="filterDeviss($event)" field="numero" [dropdown]="true">
+                </p-autoComplete>
                 <small class="ng-dirty ng-invalid" *ngIf="submitted && !facture.devis" style="color:darkred">This field is required.</small>
 
             </div>
@@ -177,6 +171,7 @@
             <div class="field">
                 <label for="date_facture" style="text-transform: capitalize">Date Facture </label>
                 <input type="date" pInputText id="date_facture" [(ngModel)]="facture.date_facture" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !facture.date_facture}"/>
+
                 <small class="ng-dirty ng-invalid" *ngIf="submitted && !facture.date_facture" style="color:darkred">This field is required.</small>
             </div>
 

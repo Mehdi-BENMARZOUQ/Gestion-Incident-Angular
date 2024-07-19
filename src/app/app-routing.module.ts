@@ -7,6 +7,10 @@ import {AgenceComponent} from "./demo/components/Agence/agence.component";
 import {TechnicienComponent} from "./demo/components/Technicien/technicien.component";
 import {DevisComponent} from "./demo/components/Devis/devis.component";
 import {FactureComponent} from "./demo/components/Facture/facture.component";
+import {DemandeComponent} from "./demo/components/Demande/demande.component";
+import {FeedbackComponent} from "./demo/components/Feedback/feedback.component";
+import {NotificationComponent} from "./demo/components/Notification/notification.component";
+import {UserComponent} from "./demo/components/user/user.component";
 
 @NgModule({
     imports: [
@@ -36,6 +40,28 @@ import {FactureComponent} from "./demo/components/Facture/facture.component";
                         path: 'facture',
                         component: FactureComponent
 
+                    },
+                    {
+                        path: 'demandes',
+                        component: DemandeComponent,
+                        canActivate: [RoleGuard],
+                        data: { expectedRole: 'SUPERVISOR' }
+                    },
+                    {
+                        path: 'myfeedbacks',
+                        component: FeedbackComponent,
+                        canActivate: [RoleGuard],
+                        data: { expectedRole: 'USER' }
+                    },
+                    {
+                        path: 'notifications',
+                        component: NotificationComponent
+                    },
+                    {
+                        path: 'user',
+                        component: UserComponent,
+                        canActivate: [RoleGuard],
+                        data: { expectedRole: 'SUPERVISOR' }
                     },
                     { path: 'dashboard', loadChildren: () => import('./demo/components/GI-Dashboard/dashboard.module').then(m => m.DashboardModule) },
                     { path: 'uikit', loadChildren: () => import('./demo/components/uikit/uikit.module').then(m => m.UIkitModule) },

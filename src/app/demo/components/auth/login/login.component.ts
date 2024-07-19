@@ -36,7 +36,7 @@ export class LoginComponent {
                             title: 'Login Success',
                             text: `Welcome ${this.authService.getUser()}`,
                         });
-                        this.router.navigate(['/agence']);
+                        this.router.navigate(['/dashboard']);
                     } else {
                         Swal.fire({
                             icon: 'success',

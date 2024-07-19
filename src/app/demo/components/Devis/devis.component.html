@@ -22,7 +22,7 @@
                 <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help" (click)="exportDeviss()"></button>
             </ng-template>
         </p-toolbar>
-        <p-table #dt1 [value]="deviss" dataKey="id" [rows]="10" [loading]="loading" [rowHover]="true" styleClass="p-datatable-gridlines" [paginator]="true" [globalFilterFields]="['numero','date','equipementE','prestataire','montant','assurance','rejected','technicien','agence','traitepar']" responsiveLayout="scroll">
+        <p-table #dt1 [value]="filteredDevis" dataKey="id" [rows]="10" [loading]="loading" [rowHover]="true" styleClass="p-datatable-gridlines" [paginator]="true" [globalFilterFields]="['numero','date','equipementE','prestataire','montant','assurance','rejected','technicien','agence','traitepar']" responsiveLayout="scroll">
             <ng-template pTemplate="caption">
                 <div class="flex justify-content-between flex-column sm:flex-row">
 
@@ -141,7 +141,7 @@
                             </p-columnFilter>-->
                         </div>
                     </th>
-                    <th>
+                    <th *ngIf="userRole === 'SUPERVISOR'">
 
                     </th>
                 </tr>
@@ -164,10 +164,12 @@
                         {{devis.montant}}
                     </td>
                     <td>
-                        {{devis.assurance}}
+                        <i class="pi" [ngClass]="{'true-icon pi-check-circle text-green-500': devis.assurance, 'false-icon pi-times-circle text-pink-500': !devis.assurance}"></i>
+
                     </td>
                     <td>
-                        {{devis.rejected}}
+                        <i class="pi" [ngClass]="{'true-icon pi-check-circle text-green-500': devis.rejected, 'false-icon pi-times-circle text-pink-500': !devis.rejected}"></i>
+
                     </td>
                     <td>
                         {{devis.technicien.nom}}
@@ -178,7 +180,7 @@
                     <td>
                         {{devis.traitepar.prenom}}
                     </td>
-                    <td>
+                    <td *ngIf="userRole === 'SUPERVISOR'">
                         <button pButton type="button" icon="pi pi-pencil" class="p-button-success mr-2" (click)="editDevis(devis)"></button>
                         <button pButton type="button" icon="pi pi-trash" class="p-button-warning mr-2" (click)="deleteDevis(devis.id)"></button>
                     </td>
@@ -199,7 +201,7 @@
     </div>
 
 
-    <p-dialog [(visible)]="devisDialog" [style]="{width: '600px'}" header="Product Details" [modal]="true" class="p-fluid">
+    <p-dialog [(visible)]="devisDialog" [style]="{width: '600px'}" header="Add | Update Devis" [modal]="true" class="p-fluid">
         <ng-template pTemplate="content">
 
 
@@ -231,28 +233,16 @@
 
             <div class="field">
                 <label  style="text-transform: capitalize">technicien</label>
-                <p-dropdown  [(ngModel)]="devis.technicien" inputId="technicien" optionValue="nom" [options]="techniciens" placeholder="Select">
-                    <ng-template pTemplate="selectedItem">
-                        <span *ngIf="devis && devis.technicien" [class]="devis.technicien.nom">{{devis.technicien}}</span>
-                    </ng-template>
-                    <ng-template let-option pTemplate="item">
-                        <span [class]="option.value">{{option.nom}}</span>
-                    </ng-template>
-                </p-dropdown>
+                <p-autoComplete [(ngModel)]="devis.technicien" [suggestions]="filteredTechnicien" (completeMethod)="filterTechniciens($event)" field="nom" [dropdown]="true">
+                </p-autoComplete>
                 <small class="ng-dirty ng-invalid" *ngIf="submitted && !devis.technicien" style="color:darkred">This field is required.</small>
 
             </div>
 
             <div class="field">
                 <label  style="text-transform: capitalize">agence</label>
-                <p-dropdown [(ngModel)]="devis.agence" inputId="agence" optionValue="nom" [options]="agences" placeholder="Select">
-                    <ng-template pTemplate="selectedItem">
-                        <span *ngIf="devis && devis.agence" [class]="devis.agence.nom">{{devis.agence}}</span>
-                    </ng-template>
-                    <ng-template let-option pTemplate="item">
-                        <span [class]="option.value">{{option.nom}} </span>
-                    </ng-template>
-                </p-dropdown>
+                <p-autoComplete [(ngModel)]="devis.agence" [suggestions]="filteredAgence" (completeMethod)="filterAgences($event)" field="nom" [dropdown]="true">
+                </p-autoComplete>
                 <small class="ng-dirty ng-invalid" *ngIf="submitted && !devis.agence" style="color:darkred">This field is required.</small>
 
             </div>
@@ -261,11 +251,11 @@
                 <label style="text-transform: capitalize">assurance</label>
                 <div class="formgrid grid">
                     <div class="field-radiobutton col-6">
-                        <p-radioButton id="assurance1" name="rejected" value="true" [(ngModel)]="devis.assurance"></p-radioButton>
+                        <p-radioButton id="assurance1" name="rejected" value="1" [(ngModel)]="devis.assurance"></p-radioButton>
                         <label for="assurance1">True</label>
                     </div>
                     <div class="field-radiobutton col-6">
-                        <p-radioButton id="assurance2" name="rejected" value="false" [(ngModel)]="devis.assurance"></p-radioButton>
+                        <p-radioButton id="assurance2" name="rejected" value="0" [(ngModel)]="devis.assurance"></p-radioButton>
                         <label for="assurance2">False</label>
                     </div>
                 </div>
@@ -277,11 +267,11 @@
                 <label style="text-transform: capitalize">rejected</label>
                 <div class="formgrid grid">
                     <div class="field-radiobutton col-6">
-                        <p-radioButton id="rejected1" name="rejected" value="true" [(ngModel)]="devis.rejected"></p-radioButton>
+                        <p-radioButton id="rejected1" name="rejected" value="1" [(ngModel)]="devis.rejected"></p-radioButton>
                         <label for="rejected1">True</label>
                     </div>
                     <div class="field-radiobutton col-6">
-                        <p-radioButton id="rejected2" name="rejected" value="false" [(ngModel)]="devis.rejected"></p-radioButton>
+                        <p-radioButton id="rejected2" name="rejected" value="0" [(ngModel)]="devis.rejected"></p-radioButton>
                         <label for="rejected2">False</label>
                     </div>
                 </div>
