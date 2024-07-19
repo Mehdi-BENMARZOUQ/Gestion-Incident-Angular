@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {BehaviorSubject, Observable, of} from 'rxjs';
+import {BehaviorSubject, catchError, Observable, of, tap, throwError} from 'rxjs';
 import { map } from 'rxjs/operators';
 import {environment} from "../../environments/environment";
 import {AgenceModel} from "../model/agence.model";
 import {UserModel} from "../model/user.model";
+import {Router} from "@angular/router";
 
 @Injectable({
     providedIn: 'root'
@@ -14,7 +15,8 @@ export class AuthService {
     private currentUserSubject: BehaviorSubject<any>;
     public currentUser: Observable<any>;
 
-    constructor(private http: HttpClient) {
+    constructor(private router: Router,
+                private http: HttpClient) {
         this.currentUserSubject = new BehaviorSubject<any>(JSON.parse(localStorage.getItem('currentUser')));
         this.currentUser = this.currentUserSubject.asObservable();
     }
@@ -49,12 +51,29 @@ export class AuthService {
                 })
             );
     }
-    logout() {
+    /*logout() {
         localStorage.removeItem('currentUser');
         localStorage.removeItem('token');
         this.currentUserSubject.next(null);
-    }
+    }*/
+    logout(): Observable<any> {
+        return this.http.post<any>(`${this.apiUrl}/auth/logout`, {}).pipe(
+            tap(() => {
+                localStorage.removeItem('currentUser');
+                localStorage.removeItem('token');
+                this.currentUserSubject.next(null);
 
+                // Navigate to login page
+                this.router.navigate(['/auth/login']).then(() => {
+                    // Clear browser history
+                    window.history.pushState(null, '', window.location.href);
+                    window.onpopstate = function () {
+                        window.history.pushState(null, '', window.location.href);
+                    };
+                });
+            })
+        );
+    }
     isLoggedIn() {
         return !!this.currentUserValue && !!localStorage.getItem('token');
     }

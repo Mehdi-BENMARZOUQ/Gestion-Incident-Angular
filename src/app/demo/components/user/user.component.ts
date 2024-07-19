@@ -89,6 +89,7 @@ export class UserComponent implements OnInit {
         };
         this.submitted = true;
         this.userDialog = true;
+        this.isNew = true;
     }
 
     hideDialog() {
@@ -103,7 +104,6 @@ export class UserComponent implements OnInit {
         if (this.user.email?.trim()) {
             this.userService.getUserByEmail(this.user.email).subscribe(
                 (existingUsers) => {
-                    console.log(`User : ${existingUsers}`);
                     if (existingUsers && this.isNew) {
                         Swal.fire({
                             icon: 'error',

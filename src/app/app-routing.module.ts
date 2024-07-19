@@ -11,6 +11,8 @@ import {DemandeComponent} from "./demo/components/Demande/demande.component";
 import {FeedbackComponent} from "./demo/components/Feedback/feedback.component";
 import {NotificationComponent} from "./demo/components/Notification/notification.component";
 import {UserComponent} from "./demo/components/user/user.component";
+import {LoginGuard} from "./guard/login.guard";
+import {LoginComponent} from "./demo/components/auth/login/login.component";
 
 @NgModule({
     imports: [
@@ -72,6 +74,11 @@ import {UserComponent} from "./demo/components/user/user.component";
                 ]
             },
             { path: 'auth', loadChildren: () => import('./demo/components/auth/auth.module').then(m => m.AuthModule) },
+            {
+                path: 'auth/login',
+                component: LoginComponent,
+                canActivate: [LoginGuard]
+            },
             { path: 'landing', loadChildren: () => import('./demo/components/landing/landing.module').then(m => m.LandingModule) },
             { path: 'notfound', component: NotfoundComponent },
             { path: '**', redirectTo: '/notfound' },

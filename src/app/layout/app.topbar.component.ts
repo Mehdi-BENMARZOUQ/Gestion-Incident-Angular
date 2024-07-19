@@ -12,6 +12,7 @@ import {NotificationModel} from "../model/notification.model";
 import {NotificationService} from "../service/notification.service";
 import {UserService} from "../service/user.service";
 import {Router} from "@angular/router";
+import {IdleService} from "../service/IdleService";
 
 @Component({
     selector: 'app-topbar',
@@ -34,7 +35,13 @@ export class AppTopBarComponent {
 
     @ViewChild('topbarmenu') menu!: ElementRef;
 
-    constructor(private userService: UserService, private router: Router,public layoutService: LayoutService,private  authService: AuthService,private demandeService: DemandeService,public notificationService: NotificationService) { }
+    constructor(private idleService: IdleService,
+                private userService: UserService,
+                private router: Router,
+                public layoutService: LayoutService,
+                private  authService: AuthService,
+                private demandeService: DemandeService,
+                public notificationService: NotificationService) { }
 
     ngOnInit(): void {
         this.checkLoginStatus();
@@ -42,6 +49,11 @@ export class AppTopBarComponent {
         this.getFeedback();
         this.getUnreadNotificationCount();
         this.allItems();
+
+    }
+
+    ngOnDestroy() {
+        this.idleService.stopTimer();
     }
 
     allItems(){
@@ -106,14 +118,15 @@ export class AppTopBarComponent {
     }
 
     logout(): void {
-        this.userService.logout().subscribe({
+        this.authService.logout().subscribe({
             next: () => {
-                // Clear local storage or any client-side auth data
-                this.authService.clearAuthData(); // Implement this method in your AuthService
+                console.log('Logout successful');
                 this.router.navigate(['/auth/login']);
             },
             error: (error) => {
                 console.error('Logout failed:', error);
+                // Even if logout fails, redirect to login page
+                this.router.navigate(['/auth/login']);
             }
         });
     }

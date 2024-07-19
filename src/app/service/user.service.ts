@@ -32,5 +32,4 @@ export class UserService {
         return this.http.post(`${this.apiUrl}/auth/logout`, {}, { responseType: 'text' });
     }
 
-
 }

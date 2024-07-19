@@ -1,6 +1,7 @@
 import { OnInit } from '@angular/core';
 import { Component } from '@angular/core';
 import { LayoutService } from './service/app.layout.service';
+import {AuthService} from "../service/Auth.service";
 
 @Component({
     selector: 'app-menu',
@@ -10,9 +11,11 @@ export class AppMenuComponent implements OnInit {
 
     model: any[] = [];
 
-    constructor(public layoutService: LayoutService) { }
+    constructor(public layoutService: LayoutService,
+                private authService: AuthService) { }
 
     ngOnInit() {
+        const userRoles = this.authService.getCurrentRole();
         this.model = [
             {
                 label: 'Home',
@@ -22,14 +25,16 @@ export class AppMenuComponent implements OnInit {
                     { label: 'Facture', icon: 'pi pi-fw pi-file ', routerLink: ['/facture'] },
                 ]
             },
-            {
+            ...userRoles.includes('SUPERVISOR') ?[{
                 label: 'Admin Section',
                 items: [
                     { label: 'User', icon: 'pi pi-fw pi-users', routerLink: ['/user'] },
                     { label: 'AgenceModel', icon: 'pi pi-fw pi-building', routerLink: ['/agence'] },
                     { label: 'Technicien', icon: 'pi pi-fw pi-truck', routerLink: ['/technicien'] },
                 ]
-            },
+            }] : []
+
+            /*
             {
                 label: 'UI Components',
                 items: [
@@ -170,6 +175,8 @@ export class AppMenuComponent implements OnInit {
                     }
                 ]
             }
+
+            */
         ];
     }
 }
