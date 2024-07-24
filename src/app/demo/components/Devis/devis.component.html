@@ -22,7 +22,7 @@
                 <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help" (click)="exportDeviss()"></button>
             </ng-template>
         </p-toolbar>
-        <p-table #dt1 [value]="filteredDevis" dataKey="id" [rows]="10" [loading]="loading" [rowHover]="true" styleClass="p-datatable-gridlines" [paginator]="true" [globalFilterFields]="['numero','date','equipementE','prestataire','montant','assurance','rejected','technicien','agence','traitepar']" responsiveLayout="scroll">
+        <p-table #dt1 [value]="filteredDevis" dataKey="id" [rows]="6" [loading]="loading" [rowHover]="true" styleClass="p-datatable-gridlines" [paginator]="true" [globalFilterFields]="['numero','date','equipementE','prestataire','montant','assurance','rejected','technicien','agence','traitepar']" responsiveLayout="scroll">
             <ng-template pTemplate="caption">
                 <div class="flex justify-content-between flex-column sm:flex-row">
 
@@ -44,7 +44,7 @@
                     <th style="min-width: 12rem">
                         <div class="flex justify-content-between align-items-center">
                             DATE
-                            <p-columnFilter type="date" field="date" display="menu" placeholder="mm/dd/yyyy"></p-columnFilter>
+                            <p-columnFilter type="date" field="date" display="menu" placeholder="dd/mm/yyyy"></p-columnFilter>
                         </div>
                     </th>
                     <th style="min-width: 14rem">
@@ -152,7 +152,7 @@
                         {{devis.numero}}
                     </td>
                     <td>
-                        {{ devis.date | date:'dd/MM/yyyy' }}
+                        {{ devis.date | date:'MM/dd/yyyy' }}
                     </td>
                     <td>
                         {{devis.equipementE}}
@@ -251,11 +251,11 @@
                 <label style="text-transform: capitalize">assurance</label>
                 <div class="formgrid grid">
                     <div class="field-radiobutton col-6">
-                        <p-radioButton id="assurance1" name="rejected" value="1" [(ngModel)]="devis.assurance"></p-radioButton>
+                        <p-radioButton id="assurance1" name="rejected" value="true" [(ngModel)]="devis.assurance"></p-radioButton>
                         <label for="assurance1">True</label>
                     </div>
                     <div class="field-radiobutton col-6">
-                        <p-radioButton id="assurance2" name="rejected" value="0" [(ngModel)]="devis.assurance"></p-radioButton>
+                        <p-radioButton id="assurance2" name="rejected" value="false" [(ngModel)]="devis.assurance"></p-radioButton>
                         <label for="assurance2">False</label>
                     </div>
                 </div>
@@ -267,11 +267,11 @@
                 <label style="text-transform: capitalize">rejected</label>
                 <div class="formgrid grid">
                     <div class="field-radiobutton col-6">
-                        <p-radioButton id="rejected1" name="rejected" value="1" [(ngModel)]="devis.rejected"></p-radioButton>
+                        <p-radioButton id="rejected1" name="rejected" value="true" [(ngModel)]="devis.rejected"></p-radioButton>
                         <label for="rejected1">True</label>
                     </div>
                     <div class="field-radiobutton col-6">
-                        <p-radioButton id="rejected2" name="rejected" value="0" [(ngModel)]="devis.rejected"></p-radioButton>
+                        <p-radioButton id="rejected2" name="rejected" value="false" [(ngModel)]="devis.rejected"></p-radioButton>
                         <label for="rejected2">False</label>
                     </div>
                 </div>

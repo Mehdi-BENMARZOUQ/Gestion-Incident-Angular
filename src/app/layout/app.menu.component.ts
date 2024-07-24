@@ -29,7 +29,7 @@ export class AppMenuComponent implements OnInit {
                 label: 'Admin Section',
                 items: [
                     { label: 'User', icon: 'pi pi-fw pi-users', routerLink: ['/user'] },
-                    { label: 'AgenceModel', icon: 'pi pi-fw pi-building', routerLink: ['/agence'] },
+                    { label: 'Agence', icon: 'pi pi-fw pi-building', routerLink: ['/agence'] },
                     { label: 'Technicien', icon: 'pi pi-fw pi-truck', routerLink: ['/technicien'] },
                 ]
             }] : []
