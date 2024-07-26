@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import {catchError, Observable} from 'rxjs';
 import { AgenceModel } from '../model/agence.model';
+import {map} from "rxjs/operators";
 
 @Injectable({
     providedIn: 'root'
@@ -23,8 +24,12 @@ export class AgenceService {
         return this.http.post<AgenceModel>(`${this.apiUrl}/supervisor/updateAgence/${id}`, agence);
     }
 
-    deleteAgence(id: number): Observable<void> {
-        return this.http.delete<void>(`${this.apiUrl}/supervisor/deleteagence/${id}`);
+
+    deleteAgence(id: number): Observable<any> {
+        return this.http.delete(`${this.apiUrl}/supervisor/deleteagence/${id}`, { responseType: 'text' })
+            .pipe(
+                map(response => response)
+            );
     }
 
     getAgenceByName(name: string): Observable<AgenceModel[]> {

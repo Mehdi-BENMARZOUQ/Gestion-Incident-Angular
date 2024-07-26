@@ -49,13 +49,36 @@ export class TechnicienComponent implements OnInit {
 
     deleteTechnicien(id: number): void {
         this.technicienService.deleteTechnicien(id).subscribe(
-            () => {
-                this.techniciens = this.techniciens.filter(technicien => technicien.id !== id);
-                this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Technicien Deleted', life: 3000 });
+            (response) => {
+                if (response === "Done") {
+                    this.techniciens = this.techniciens.filter(agence => agence.id !== id);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Technicien supprimée avec succès',
+                    });
+                    this.getTechniciens();
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erreur lors de la suppression',
+                        text: 'Une erreur inattendue s\'est produite.',
+                    });
+                }
             },
             (error) => {
-                console.error('Delete Technicien Error:', error);
-                this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to delete Technicien', life: 3000 });
+                if(error.error === "Ce Technicien est liee aux devis"){
+                    Swal.fire({
+                        icon: 'error',
+                        title: `Impossible de supprimer le technicien`,
+                        text: `Ce technicien est liée à des devis. Veuillez d\\'abord supprimer ces devis."`,
+                    });
+                }else{
+                    Swal.fire({
+                        icon: 'error',
+                        title: "Erreur lors de la suppression",
+                        text: 'Une erreur inattendue s\'est produite.',
+                    });
+                }
             }
         );
     }

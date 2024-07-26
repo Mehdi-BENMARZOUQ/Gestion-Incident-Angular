@@ -16,16 +16,7 @@
     <h5>Change Theme</h5>
     <div class="grid">
         <div class="col-3">
-            <button class="p-link w-2rem h-2rem" (click)="changeTheme('bcp-light-orange', 'light')">
-                <img src="assets/layout/images/themes/sun-light-icon.png" class="w-2rem h-2rem" alt="Bootstrap Light Purple">
-
-            </button>
-        </div>
-        <div class="col-3">
-            <button class="p-link w-2rem h-2rem" (click)="changeTheme('bcp-dark-orange', 'dark')">
-                <img src="assets/layout/images/themes/night-icon-black.png" class="w-2rem h-2rem" alt="Bootstrap Dark Blue">
-
-            </button>
+            <p-inputSwitch (click)="switchTheme(valSwitch)"></p-inputSwitch>
         </div>
     </div>
 

@@ -52,13 +52,38 @@ export class AgenceComponent implements OnInit {
 
     deleteAgence(id: number): void {
         this.agenceService.deleteAgence(id).subscribe(
-            () => {
-                this.agences = this.agences.filter(agence => agence.id !== id);
-                this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Agence Deleted', life: 3000 });
+            (response) => {
+                if (response === "Done") {
+                    this.agences = this.agences.filter(agence => agence.id !== id);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Agence supprimée avec succès',
+                    });
+                    this.getAgences();
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erreur lors de la suppression',
+                        text: 'Une erreur inattendue s\'est produite.',
+                    });
+                }
             },
             (error) => {
-                console.error('Delete Agence Error:', error);
-                this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to delete agence', life: 3000 });
+                if(error.error === "Cette agence est liee aux devis"){
+                    Swal.fire({
+                        icon: 'error',
+                        title: `Impossible de supprimer l\\'agence`,
+                        text: `Cette agence est liée à des devis. Veuillez d\\'abord supprimer ces devis."`,
+                    });
+                }
+                else{
+                    Swal.fire({
+                        icon: 'error',
+                        title: "Erreur lors de la suppression",
+                        text: 'Une erreur inattendue s\'est produite.',
+                    });
+                    this.getAgences();
+                }
             }
         );
     }

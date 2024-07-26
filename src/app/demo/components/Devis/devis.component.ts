@@ -73,18 +73,6 @@ export class DevisComponent implements OnInit {
             this.userRole = null;
         }
     }
-    /*getDeviss(): void {
-        this.devisService.getDevis().subscribe(
-            (data: DevisModel[]) => {
-                this.deviss = data;
-                this.loading = false;
-            },
-            (error) => {
-                console.error(error);
-                this.loading = false;
-            }
-        );
-    }*/
 
     filteredDevis: DevisModel[] = [];
 
@@ -138,11 +126,18 @@ export class DevisComponent implements OnInit {
         this.devisService.deleteDevis(id).subscribe(
             () => {
                 this.deviss = this.deviss.filter(devis => devis.id !== id);
-                this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Devis Deleted', life: 3000 });
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Devis supprimée avec succès',
+                });
+                this.getDeviss();
             },
             (error) => {
-                console.error('Delete Devis Error:', error);
-                this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to delete devis', life: 3000 });
+                Swal.fire({
+                    icon: 'error',
+                    title: "Erreur lors de la suppression",
+                    text: 'Une erreur inattendue s\'est produite.',
+                });
             }
         );
     }

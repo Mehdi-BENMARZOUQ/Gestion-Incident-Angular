@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {TechnicienModel} from "../model/technicien.model";
+import {map} from "rxjs/operators";
 
 @Injectable({
     providedIn: 'root'
@@ -23,8 +24,11 @@ export class TechnicienService {
         return this.http.post<TechnicienModel>(`${this.apiUrl}/supervisor/updatetechnicien/${id}`, technicien);
     }
 
-    deleteTechnicien(id: number): Observable<void> {
-        return this.http.delete<void>(`${this.apiUrl}/supervisor/deletetechnicien/${id}`);
+    deleteTechnicien(id: number): Observable<any> {
+        return this.http.delete(`${this.apiUrl}/supervisor/deletetechnicien/${id}`, { responseType: 'text' })
+            .pipe(
+                map(response => response)
+            );
     }
 
     getTechnicienByMatricule(name: string): Observable<TechnicienModel[]> {

@@ -70,18 +70,7 @@ export class FactureComponent implements OnInit {
         }
     }
 
-   /* getFactures(): void {
-        this.factureService.getFactures().subscribe(
-            (data: FactureModel[]) => {
-                this.factures = data;
-                this.loading = false;
-            },
-            (error) => {
-                console.error(error);
-                this.loading = false;
-            }
-        );
-    }*/
+
 
     filteredFactures: FactureModel[] = [];
 
@@ -123,7 +112,7 @@ export class FactureComponent implements OnInit {
         this.factureService.deleteFacture(id).subscribe(
             () => {
                 this.factures = this.factures.filter(facture => facture.id !== id);
-                this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Facture Deleted', life: 3000 });
+                this.getFactures();
             },
             (error) => {
                 console.error('Delete Facture Error:', error);
@@ -191,7 +180,7 @@ export class FactureComponent implements OnInit {
                                     this.factures.push(newF);
                                     Swal.fire({
                                         icon: 'success',
-                                        title: `Devis Created Successfully`,
+                                        title: `Facture Created Successfully`,
                                     });
                                     this.getFactures();
                                 },

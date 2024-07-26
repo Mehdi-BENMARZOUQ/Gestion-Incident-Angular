@@ -36,14 +36,14 @@ export class LoginComponent {
                             title: 'Login Success',
                             text: `Welcome ${this.authService.getUser()}`,
                         });
-                        this.router.navigate(['/dashboard']);
+                        this.router.navigate(['/']);
                     } else {
                         Swal.fire({
                             icon: 'success',
                             title: 'Login Success',
                             text: `Welcome ${this.authService.getUser()}`,
                         });
-                        this.router.navigate(['/dashboard']);
+                        this.router.navigate(['/']);
                     }
                 } else {
                     Swal.fire({

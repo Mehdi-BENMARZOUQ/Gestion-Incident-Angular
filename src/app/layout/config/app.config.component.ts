@@ -12,6 +12,9 @@ export class AppConfigComponent {
 
     scales: number[] = [12, 13, 14, 15, 16];
 
+    valSwitch: boolean = false;
+
+
     constructor(
         public layoutService: LayoutService,
         public menuService: MenuService,
@@ -98,5 +101,19 @@ export class AppConfigComponent {
 
     incrementScale() {
         this.scale++;
+    }
+
+
+    switchTheme(v:boolean){
+        if(v == false){
+            this.changeTheme('bcp-light-orange', 'light');
+            this.valSwitch = !this.valSwitch;
+            return true;
+        }
+        else{
+            this.changeTheme('bcp-dark-orange', 'dark')
+            this.valSwitch = !this.valSwitch;
+            return false
+        }
     }
 }
