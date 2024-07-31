@@ -14,12 +14,14 @@
                     <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>
                 </div>
             </ng-template>
-
             <ng-template pTemplate="right">
                 <!--
                 <p-fileUpload (change)="importAgences($event)"  mode="basic"  accept=".csv" [maxFileSize]="1000000" label="Import" chooseLabel="Import" class="mr-2 inline-block"></p-fileUpload>
 -->
                 <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help" (click)="exportFactures()"></button>
+
+                <button pButton type="button" label="Exporter PDF" icon="pi pi-file-pdf" style="margin-left: 10px;" (click)="exportFacturesPDF()"></button>
+
             </ng-template>
         </p-toolbar>
         <p-table #dt1 [value]="filteredFactures" dataKey="id" [rows]="10" [loading]="loading" [rowHover]="true" styleClass="p-datatable-gridlines" [paginator]="true" [globalFilterFields]="['numero','date_facture','montant','devis','date_traitement','traitepar']" responsiveLayout="scroll">

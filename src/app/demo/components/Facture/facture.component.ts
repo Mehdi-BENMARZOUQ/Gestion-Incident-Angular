@@ -9,7 +9,8 @@ import {FactureModel} from "../../../model/facture.model";
 import {FactureService} from "../../../service/facture.service";
 import {AuthService} from "../../../service/Auth.service";
 import { Router, ActivatedRoute } from '@angular/router';
-
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 interface expandedRows {
     [key: string]: boolean;
 }
@@ -260,6 +261,26 @@ export class FactureComponent implements OnInit {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+    }
+    exportFacturesPDF() {
+        const doc = new jsPDF();
+        const headers = [['Numéro', 'Date de Facture', 'Date de Traitement', 'Montant', 'Devis', 'Traité par']];
+        const body = this.factures.map(facture => [
+            facture.numero,
+            facture.date_facture ? new Date(facture.date_facture).toLocaleDateString() : '',
+            facture.date_traitement ? new Date(facture.date_traitement).toLocaleDateString() : '',
+            facture.montant.toString(),
+            facture.devis.numero || '', // Assurez-vous que 'devis' et 'numero' existent
+            facture.traitepar.prenom || '' // Assurez-vous que 'traitepar' et 'prenom' existent
+        ]);
+        // Créer le tableau PDF avec jsPDF
+        // @ts-ignore
+        doc.autoTable({
+            head: headers,
+            body: body
+        });
+        // Sauvegarder le PDF avec le nom souhaité
+        doc.save('factures.pdf');
     }
 
     importFactures(event: any) {

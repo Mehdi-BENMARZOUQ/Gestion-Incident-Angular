@@ -11,6 +11,8 @@ import {AgenceModel} from "../../../model/agence.model";
 import {AgenceService} from "../../../service/agence.service";
 import {AuthService} from "../../../service/Auth.service";
 import { Router, ActivatedRoute } from '@angular/router';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 
 interface expandedRows {
@@ -272,6 +274,26 @@ export class DevisComponent implements OnInit {
         link.click();
         document.body.removeChild(link);
     }
+    exportPDF() {
+        const doc = new jsPDF();
+        // @ts-ignore
+        doc.autoTable({
+            head: [['Numéro', 'Date', 'Équipement', 'Prestataire', 'Montant', 'Assurance', 'Technicien', 'Agence']],
+            body: this.deviss.map(devis => [
+                devis.numero,
+                devis.date ? new Date(devis.date).toLocaleDateString() : '',
+                devis.equipementE,
+                devis.prestataire,
+                devis.montant.toString(),
+                devis.assurance ? 'Oui' : 'Non',
+                devis.technicien?.nom || '',
+                devis.agence?.nom || ''
+            ])
+        });
+
+        doc.save('deviss.pdf');
+    }
+
 
     importDeviss(event: any) {
         const file = event.target.files[0];

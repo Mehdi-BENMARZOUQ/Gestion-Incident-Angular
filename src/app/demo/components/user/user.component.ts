@@ -6,7 +6,8 @@ import * as Papa from 'papaparse';
 import {UserModel} from "../../../model/user.model";
 import {UserService} from "../../../service/user.service";
 import {Router} from "@angular/router";
-
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 interface expandedRows {
     [key: string]: boolean;
@@ -188,6 +189,20 @@ export class UserComponent implements OnInit {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+    }
+    exportPDF() {
+        const doc = new jsPDF();
+        // @ts-ignore
+        doc.autoTable({
+            head: [['Prénom', 'Email', 'Rôle']],
+            body: this.users.map(user => [
+                user.prenom,
+                user.email,
+                user.role
+            ])
+        });
+
+        doc.save('users.pdf');
     }
 
 

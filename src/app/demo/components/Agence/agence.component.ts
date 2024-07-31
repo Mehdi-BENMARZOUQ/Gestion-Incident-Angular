@@ -6,6 +6,8 @@ import {AgenceModel} from "../../../model/agence.model";
 import {Product} from "../../api/product";
 import Swal from 'sweetalert2';
 import * as Papa from 'papaparse';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 import {UserService} from "../../../service/user.service";
 import {Router} from "@angular/router";
 import {AuthService} from "../../../service/Auth.service";
@@ -200,6 +202,35 @@ export class AgenceComponent implements OnInit {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+    }
+    exportAgencesPDF() {
+        const doc = new jsPDF();
+        // @ts-ignore
+        doc.autoTable({
+            head: [['ID', 'Nom']],
+            body: this.agences.map(agence => [
+                agence.id,
+                agence.nom
+            ]),
+            startY: 20,
+            margin: { horizontal: 10 },
+            styles: {
+                fontSize: 10,
+                cellPadding: 5,
+                overflow: 'linebreak',
+                halign: 'left',
+                valign: 'middle'
+            },
+            headStyles: {
+                fillColor: [41, 128, 185]
+            },
+            footStyles: {
+                fillColor: [41, 128, 185]
+            },
+            tableWidth: 'auto',
+        });
+
+        doc.save('agences.pdf');
     }
 
 

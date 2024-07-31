@@ -15,12 +15,14 @@
                     </div>
 
                 </ng-template>
-
                 <ng-template pTemplate="right">
                     <!--
                     <p-fileUpload (change)="importAgences($event)"  mode="basic"  accept=".csv" [maxFileSize]="1000000" label="Import" chooseLabel="Import" class="mr-2 inline-block"></p-fileUpload>
--->
+    -->
                     <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help" (click)="exportAgences()"></button>
+
+                    <button pButton type="button" label="Exporter PDF" icon="pi pi-file-pdf" style="margin-left: 10px;" (click)="exportAgencesPDF()"></button>
+
                 </ng-template>
             </p-toolbar>
             <p-table #dt1 [value]="agences" dataKey="id" [rows]="10" [loading]="loading" [rowHover]="true" styleClass="p-datatable-gridlines" [paginator]="true" [globalFilterFields]="['id','nom']" responsiveLayout="scroll">

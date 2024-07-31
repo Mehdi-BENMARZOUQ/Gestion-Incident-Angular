@@ -5,6 +5,8 @@ import { TechnicienService } from '../../../service/technicien.service';
 import {TechnicienModel} from "../../../model/technicien.model";
 import Swal from 'sweetalert2';
 import * as Papa from 'papaparse';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 
 interface expandedRows {
@@ -199,6 +201,36 @@ export class TechnicienComponent implements OnInit {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+    }
+    exportPDF() {
+        const doc = new jsPDF();
+        // @ts-ignore
+        doc.autoTable({
+            head: [['ID', 'Matricule', 'Nom']],
+            body: this.techniciens.map(technicien => [
+                technicien.id,
+                technicien.matricule,
+                technicien.nom
+            ]),
+            startY: 20,
+            margin: { horizontal: 10 },
+            styles: {
+                fontSize: 10,
+                cellPadding: 5,
+                overflow: 'linebreak',
+                halign: 'left',
+                valign: 'middle'
+            },
+            headStyles: {
+                fillColor: [41, 128, 185]
+            },
+            footStyles: {
+                fillColor: [41, 128, 185]
+            },
+            tableWidth: 'auto',
+        });
+
+        doc.save('techniciens.pdf');
     }
 
     importATechniciens(event: any) {
